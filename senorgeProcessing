@@ -1,0 +1,54 @@
+# Converts .bil raster to .tif raster and conducts point sampling
+# thank you to Genna Clow for help with this code. 
+# Catherine Breen, Jan 3 2022
+
+import os
+import subprocess
+import shutil
+import glob
+
+from PyQt5.QtCore import QCoreApplication
+from qgis.core import (QgsProcessing,
+                       QgsFeatureSink,
+                       QgsProcessingException,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink)
+import processing
+
+WorkingDir = '/Users/....'  ## all the snow depth rasters
+camera_locations = '...' ## csv of camera ID, latitude and longitude 
+
+os.chdir('/Users/....)
+
+
+for subdir, dirs, files in os.walk(Clipped):
+    for file in files:
+        if file.endswith(".bil"):
+            print(file)
+            name = file[] ## this should be the full name
+            date = file[3:-3] ## this should be the just the as a string--without the file extension at the end
+            print(name)
+        
+# Set projection of raster to proper CRS: EPSG:32633 - WGS 84 / UTM zone 33N - Projected
+# Resave as .tif because it is easier to work with
+            projected = processing.run("gdal:assignprojection", {'INPUT_RASTER': file,
+            .....
+                'OUTPUT': 'snow_depth_daily.tif'})
+            print("projected")
+
+# Move tif to new folder and rename
+            filepath = subdir + os.sep + file
+            shutil.move('snow_depth_daily.tif', '/Users/.../'+name+'.tif') ## this should match the old naming convention sd_[date] with a .tif extension
+            print("File Moved")
+            
+ # Use point sampling tool to do raster extraction at all cameras every day 
+ # more info here: https://gis.stackexchange.com/questions/308708/point-sampling-tool-pyqgis
+             rasterExtraction = processing.run("qgis:rastersampling", {'INPUT': 'snow_depth_daily.tif', 'OUTPUT': 'snow_depth_outputs.geojson'})
+             
+ # convert snow_depth_outputs to a table and export 
+            pd.read_json (r'C:\Users\Ron\Desktop\Test\snow_depth_outputs.geojson')
+            df.to_csv (r'C:\Users\Ron\Desktop\Test\snow_depth_output'+name'.csv', index = None) # the result will be n number of spreadsheets with the 
+            # raster values of snow depth at each camera location
+ 
+print("DONE")
